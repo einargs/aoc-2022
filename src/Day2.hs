@@ -58,10 +58,7 @@ parseRound2 :: Parser Int
 parseRound2 = do
   elf <- parseABC
   outcome <- parseXYZ
-  let me = case outcome of
-             Lose -> winsAgainst elf
-             Draw -> elf
-             Win -> losesAgainst elf
+  let me = enumCycle (fromEnum outcome - 1) elf
   pure $ outcomeScore outcome + rpsScore me
 
 part2 :: Parser Int
