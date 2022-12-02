@@ -1,53 +1,68 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 module Day2 (day2) where
 
 import qualified Data.Text as T
 import qualified Text.Megaparsec as P
-import Text.Megaparsec ((<|>))
 import qualified Text.Megaparsec.Char as C
-import qualified Text.Megaparsec.Char.Lexer as L
 import Data.Functor (($>))
 
 import Day
 
-data RPS = Rock | Paper | Scissors deriving (Eq, Show)
+data RPS = Rock | Paper | Scissors deriving (Eq, Show, Enum, Bounded)
+
+enumCycle :: forall a. (Bounded a, Enum a) => Int -> a -> a
+enumCycle i v = toEnum $ (fromEnum v + i) `mod` (fromEnum (maxBound :: a) + 1)
+
+winsAgainst :: RPS -> RPS
+winsAgainst = enumCycle (-1)
+
+losesAgainst :: RPS -> RPS
+losesAgainst = enumCycle 1
+
+rpsScore :: RPS -> Int
+rpsScore rps = fromEnum rps + 1
+
+data Outcome = Lose | Draw | Win deriving (Eq, Show, Enum)
+
+outcomeScore :: Outcome -> Int
+outcomeScore o = fromEnum o * 3
 
 type Round = (RPS, RPS)
 
-parseRound :: Parser Round
-parseRound = (,) <$> rpsABC <*> rpsXYZ where
-  mkRps a b c = (C.string a $> Rock
-    <|> C.string b $> Paper
-    <|> C.string c $> Scissors) <* C.space
-  rpsABC = mkRps "A" "B" "C"
-  rpsXYZ = mkRps "X" "Y" "Z"
+roundOutcome :: Round -> Outcome
+roundOutcome (a, b)
+  | a == b = Draw
+  | b == winsAgainst a = Win
+  | otherwise = Lose
 
-score :: Round -> Int
-score (a, b) = play b + win a b where
-  play Rock = 1
-  play Paper = 2
-  play Scissors = 3
-  inv 0 = 6
-  inv 6 = 0
-  inv x = x
-  win Rock Scissors = 0
-  win Rock Paper = 6
-  win Scissors Paper = 0
-  win x y | x == y = 3
-          | otherwise = inv $ win y x
+roundScore :: Round -> Int
+roundScore r@(_,b) = rpsScore b + outcomeScore (roundOutcome r)
+
+parseEnum :: forall a. Enum a => [T.Text] -> Parser a
+parseEnum ls = P.choice (f <$> zip ls [0..]) <* C.space where
+  f (s, v) = C.string s $> toEnum v
+
+parseABC :: Enum a => Parser a
+parseABC = parseEnum ["A", "B", "C"]
+
+parseXYZ :: Enum a => Parser a
+parseXYZ = parseEnum ["X", "Y", "Z"]
+
+parseRound :: Parser Round
+parseRound = (,) <$> parseABC <*> parseXYZ
 
 part1 :: Parser Int
-part1 = sum <$> P.some (P.try $ score <$> parseRound)
+part1 = sum <$> P.some (P.try $ roundScore <$> parseRound)
 
 parseRound2 :: Parser Int
-parseRound2 = score . uncurry correct <$> parseRound
-  where
-    correct Rock Rock = (Rock, Scissors)
-    correct Paper Rock = (Paper, Rock)
-    correct Scissors Rock = (Scissors, Paper)
-    correct a Paper = (a, a)
-    correct Rock Scissors = (Rock, Paper)
-    correct Paper Scissors = (Paper, Scissors)
-    correct Scissors Scissors = (Scissors, Rock)
+parseRound2 = do
+  elf <- parseABC
+  outcome <- parseXYZ
+  let me = case outcome of
+             Lose -> winsAgainst elf
+             Draw -> elf
+             Win -> losesAgainst elf
+  pure $ outcomeScore outcome + rpsScore me
 
 part2 :: Parser Int
 part2 = sum <$> P.some (P.try parseRound2)
