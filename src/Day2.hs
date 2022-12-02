@@ -1,4 +1,3 @@
-{-# LANGUAGE ScopedTypeVariables #-}
 module Day2 (day2) where
 
 import qualified Data.Text as T
