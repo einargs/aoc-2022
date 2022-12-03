@@ -38,7 +38,7 @@ runPart measure ans mbAns = do
 main :: IO ()
 main = withConfig $ \Config{dayName,part,inputFile,measure} -> do
   let day = case M.lookup dayName days of
-              Just day -> day
+              Just d -> d
               Nothing -> error "Day not loaded"
   let filename = case inputFile of
                    Just path -> path
