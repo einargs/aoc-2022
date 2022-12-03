@@ -4,15 +4,21 @@ import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Text.IO qualified as TIO
 import Data.Time.Clock
+import Data.Map (Map)
+import Data.Map qualified as M
 
 import Day
 import Args
 
 import Day1
 import Day2
+import Day2Golf
+import Day3
 
-days :: [Day]
-days = [day1, day2]
+days :: Map Text Day
+days = M.fromList $ f <$> dayList where
+  f day@Day{dayName} = (dayName, day)
+  dayList = [day1, day2, day2Golf, day3]
 
 runPart :: Bool -> Text -> Maybe Text -> IO ()
 runPart measure ans mbAns = do
@@ -30,15 +36,15 @@ runPart measure ans mbAns = do
       | otherwise = ""
 
 main :: IO ()
-main = withConfig $ \Config{dayIndex,part,inputFile,measure} -> do
+main = withConfig $ \Config{dayName,part,inputFile,measure} -> do
+  let day = case M.lookup dayName days of
+              Just day -> day
+              Nothing -> error "Day not loaded"
   let filename = case inputFile of
                    Just path -> path
-                   Nothing -> "inputs/" <> show dayIndex <> ".txt"
+                   Nothing -> "inputs/" <> T.unpack dayName <> ".txt"
   txt <- TIO.readFile filename
-  let dayIdx = dayIndex - 1
-      day = if dayIdx < length days then days !! dayIdx
-                                    else error "Day not loaded"
-      p1 = runPart measure (dayPart1 day txt) (part1Ans day)
+  let p1 = runPart measure (dayPart1 day txt) (part1Ans day)
       p2 = runPart measure (dayPart2 day txt) (part2Ans day)
   case part of
     Part1 -> p1

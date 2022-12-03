@@ -4,6 +4,7 @@ module Args
   , withConfig
   ) where
 
+import Data.Text (Text)
 import Options.Applicative
 
 data Part = Part1 | Part2 | Both
@@ -16,7 +17,7 @@ readPart = maybeReader $ \case
   _ -> Nothing
 
 data Config = Config
-  { dayIndex :: Int
+  { dayName :: Text
   , part :: Part
   , inputFile :: Maybe FilePath
   , measure :: Bool
@@ -24,7 +25,7 @@ data Config = Config
 
 config :: Parser Config
 config = Config
-  <$> argument auto (help "the day of the problem" <> metavar "DAY")
+  <$> argument str (help "the name of the day of the problem" <> metavar "DAY")
   <*> argument readPart
     (help "the part of that day's problem" <> metavar "PART")
   <*> optional (strOption

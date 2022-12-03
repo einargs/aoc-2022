@@ -5,7 +5,8 @@ import Data.Text (Text)
 import qualified Text.Megaparsec as P
 
 data Day = Day
-  { dayPart1 :: Text -> Text
+  { dayName :: Text
+  , dayPart1 :: Text -> Text
   , dayPart2 :: Text -> Text
   , part1Ans :: Maybe Text
   , part2Ans :: Maybe Text

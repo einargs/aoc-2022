@@ -13,10 +13,10 @@ enumCycle :: forall a. (Bounded a, Enum a) => Int -> a -> a
 enumCycle i v = toEnum $ (fromEnum v + i) `mod` (fromEnum (maxBound :: a) + 1)
 
 winsAgainst :: RPS -> RPS
-winsAgainst = enumCycle (-1)
+winsAgainst = enumCycle 1
 
 losesAgainst :: RPS -> RPS
-losesAgainst = enumCycle 1
+losesAgainst = enumCycle (-1)
 
 rpsScore :: RPS -> Int
 rpsScore rps = fromEnum rps + 1
@@ -67,4 +67,4 @@ wrap :: (Show a) => Parser a -> T.Text -> T.Text
 wrap p = T.pack . show . runParse p
 
 day2 :: Day
-day2 = Day (wrap part1) (wrap part2) (Just "15422") (Just "15442")
+day2 = Day "2" (wrap part1) (wrap part2) (Just "15422") (Just "15442")
