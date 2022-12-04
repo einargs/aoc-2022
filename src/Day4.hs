@@ -5,45 +5,25 @@ import Data.Text qualified as T
 import Text.Megaparsec qualified as P
 import Text.Megaparsec.Char qualified as C
 import Text.Megaparsec.Char.Lexer qualified as L
-import Data.Char (ord)
-import Data.Set (Set)
-import Data.Set qualified as S
-import Data.Map (Map)
-import Data.Map qualified as M
-import Data.Functor (($>))
 
 import Day
 
-parseContaining :: Parser Bool
-parseContaining = do
-  s1 <- parseSection
-  C.string ","
-  s2 <- parseSection
-  C.space
-  pure $ inside s1 s2 || inside s2 s1
-  where
-    parseSection = (,) <$> (L.decimal <* C.string "-") <*> L.decimal
-    inside (a, b) (c, d) = a >= c && b <= d
+type Section = (Int, Int)
 
-parseOverlap :: Parser Bool
-parseOverlap = do
-  s1 <- parseSection
-  C.string ","
-  s2 <- parseSection
-  C.space
-  pure $ overlap s1 s2 || overlap s2 s1
-  where
-    parseSection = (,) <$> (L.decimal <* C.string "-") <*> L.decimal
-    overlap (a, b) (c, d) = (c <= b && b <= d) || (a <= d && a >= c)
+parsePair :: Parser (Section, Section)
+parsePair = (,) <$> (parseSection <* C.string ",") <*> parseSection <* C.space
+  where parseSection = (,) <$> (L.decimal <* C.string "-") <*> L.decimal
 
-part1 :: Parser Int
-part1 = (length . filter id) <$> P.some (P.try parseContaining)
+inside :: Section -> Section -> Bool
+inside (a, b) (c, d) = a >= c && b <= d
 
-part2 :: Parser Int
-part2 = (length . filter id) <$> P.some (P.try parseOverlap)
+overlap :: Section -> Section -> Bool
+overlap (a, b) (c, d) = (c <= b && b <= d) || (a <= d && a >= c)
 
-wrap :: Show a => Parser a -> Text -> Text
-wrap p = T.pack . show . runParse p
+wrap :: (Section -> Section -> Bool) -> Text -> Text
+wrap f = T.pack . show . runParse p where
+  g (s1, s2) = f s1 s2 || f s2 s1
+  p = length . filter g <$> P.some (P.try parsePair)
 
 day4 :: Day
-day4 = Day "4" (wrap part1) (wrap part2) Nothing Nothing
+day4 = Day "4" (wrap inside) (wrap overlap) (Just "498") (Just "859")
