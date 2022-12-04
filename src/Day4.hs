@@ -25,13 +25,22 @@ parseContaining = do
     parseSection = (,) <$> (L.decimal <* C.string "-") <*> L.decimal
     inside (a, b) (c, d) = a >= c && b <= d
 
+parseOverlap :: Parser Bool
+parseOverlap = do
+  s1 <- parseSection
+  C.string ","
+  s2 <- parseSection
+  C.space
+  pure $ overlap s1 s2 || overlap s2 s1
+  where
+    parseSection = (,) <$> (L.decimal <* C.string "-") <*> L.decimal
+    overlap (a, b) (c, d) = (c <= b && b <= d) || (a <= d && a >= c)
 
 part1 :: Parser Int
 part1 = (length . filter id) <$> P.some (P.try parseContaining)
 
 part2 :: Parser Int
-part2 = do
-  undefined
+part2 = (length . filter id) <$> P.some (P.try parseOverlap)
 
 wrap :: Show a => Parser a -> Text -> Text
 wrap p = T.pack . show . runParse p
