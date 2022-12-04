@@ -14,11 +14,12 @@ import Day1
 import Day2
 import Day2Golf
 import Day3
+import Day4
 
 days :: Map Text Day
 days = M.fromList $ f <$> dayList where
   f day@Day{dayName} = (dayName, day)
-  dayList = [day1, day2, day2Golf, day3]
+  dayList = [day1, day2, day2Golf, day3, day4]
 
 runPart :: Bool -> Text -> Maybe Text -> IO ()
 runPart measure ans mbAns = do
