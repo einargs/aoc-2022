@@ -43,4 +43,4 @@ part2 :: T.Text -> T.Text
 part2 = T.pack . show . sum . runParse (P.some $ P.try parseGroup)
 
 day3 :: Day
-day3 = Day "3" part1 part2 (Just "7845") (Just "2790")
+day3 = answeredDay "3" part1 part2 "7845" "2790"

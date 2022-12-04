@@ -15,4 +15,5 @@ part2 = sum . fmap f where
 wrap f = T.pack . show . f . fmap parse . T.splitOn "\n" . T.init where
   parse t = (ord (T.head t) - ord 'A', ord (T.last t) - ord 'X')
 
-day2Golf = Day "2Golf" (wrap part1) (wrap part2) (Just "15422") (Just "15442")
+day2Golf = answeredDay "2Golf" (wrap part1) (wrap part2) "15422" "15442"
+  `dayFile` "2"

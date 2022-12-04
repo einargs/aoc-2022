@@ -67,4 +67,4 @@ wrap :: (Show a) => Parser a -> T.Text -> T.Text
 wrap p = T.pack . show . runParse p
 
 day2 :: Day
-day2 = Day "2" (wrap part1) (wrap part2) (Just "15422") (Just "15442")
+day2 = answeredDay "2" (wrap part1) (wrap part2) "15422" "15442"

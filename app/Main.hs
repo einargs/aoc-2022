@@ -15,11 +15,12 @@ import Day2
 import Day2Golf
 import Day3
 import Day4
+import Day4Golf
 
 days :: Map Text Day
 days = M.fromList $ f <$> dayList where
   f day@Day{dayName} = (dayName, day)
-  dayList = [day1, day2, day2Golf, day3, day4]
+  dayList = [day1, day2, day2Golf, day3, day4, day4Golf]
 
 runPart :: Bool -> Text -> Maybe Text -> IO ()
 runPart measure ans mbAns = do
@@ -43,7 +44,7 @@ main = withConfig $ \Config{dayName,part,inputFile,measure} -> do
               Nothing -> error "Day not loaded"
   let filename = case inputFile of
                    Just path -> path
-                   Nothing -> "inputs/" <> T.unpack dayName <> ".txt"
+                   Nothing -> dayFileName day
   txt <- TIO.readFile filename
   let p1 = runPart measure (dayPart1 day txt) (part1Ans day)
       p2 = runPart measure (dayPart2 day txt) (part2Ans day)

@@ -34,4 +34,4 @@ wrap :: (Show a) => Parser a -> T.Text -> T.Text
 wrap p = T.pack . show . runParse p
 
 day1 :: Day
-day1 = Day "1" (wrap largest) (wrap top3) (Just "74394") (Just "212836")
+day1 = answeredDay "1" (wrap largest) (wrap top3) "74394" "212836"
