@@ -66,8 +66,8 @@ parseInput = do
   where
     skipLine = P.skipManyTill C.printChar C.newline
 
-part1 :: Parser String
-part1 = do
+solve :: ([a] -> [a]) -> Parser String
+solve h = do
   (d, is) <- parseInput
   let finalDock = foldl' f d is
   pure $ top finalDock
@@ -76,25 +76,14 @@ part1 = do
       s = dock `S.index` from
       s' = drop move s
       e = dock `S.index` to
-      e' = reverse (take move s) <> e
-    top = F.toList . fmap g
-    g (a:_) = a
-    g [] = ' '
+      e' = h (take move s) <> e
+    top = F.toList . fmap head
+
+part1 :: Parser String
+part1 = solve reverse
 
 part2 :: Parser String
-part2 = do
-  (d, is) <- parseInput
-  let finalDock = foldl' f d is
-  pure $ top finalDock
-  where
-    f dock Instr{move,from,to} = S.update to e' $ S.update from s' dock where
-      s = dock `S.index` from
-      s' = drop move s
-      e = dock `S.index` to
-      e' = take move s <> e
-    top = F.toList . fmap g
-    g (a:_) = a
-    g [] = ' '
+part2 = solve id
 
 wrap :: Parser String -> Text -> Text
 wrap p = T.pack . runParse p
