@@ -26,6 +26,7 @@ dependencies:
 - optparse-applicative >= 0.16.1.0
 - text >= 1.2
 - time >= 1.11.1.1
+- rosezipper >= 0.2
 
 ghc-options:
 - -Wall
