@@ -86,4 +86,4 @@ wrap :: (FS -> Int) -> Text -> Text
 wrap f = T.pack . show . f . runParse parseRoot
 
 day7 :: Day
-day7 = answeredDay "7Zipper" (wrap part1) (wrap part2) "1391690" "5469168" `dayFile` "7"
+day7 = answeredDay "7" (wrap part1) (wrap part2) "1391690" "5469168"

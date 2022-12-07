@@ -83,6 +83,6 @@ wrap :: ([Int] -> Int) -> Text -> Text
 wrap f = T.pack . show . f . dirSizes . runParse parseRoot
 
 day7Zipper :: Day
-day7Zipper = answeredDay "7" (wrap part1) (wrap part2) "1391690" "5469168" where
+day7Zipper = answeredDay "7Zipper" (wrap part1) (wrap part2) "1391690" "5469168" `dayFile` "7" where
   part1 = sum . filter (<=100000)
   part2 fs = minimum $ filter (>=(head fs - 40000000)) fs
