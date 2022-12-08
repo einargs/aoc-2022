@@ -2,27 +2,27 @@ module Day8 (day8) where
 
 import Data.Text (Text)
 import Data.Text qualified as T
-import Data.Vector qualified as V
 import Data.Vector.Unboxed qualified as UV
 import Control.Arrow (first, second)
 
 import Day
 
-type Forest = V.Vector (UV.Vector Int)
+type Forest = (Int, UV.Vector Int)
 type Point = (Int, Int)
 
 infixl 9 #
 
 (#) :: Forest -> Point -> Int
-v # (ui, bi) = (v V.! bi) UV.! ui
+(x, uv) # (xi, yi) = uv UV.! ((x*yi) + xi)
 
 size :: Forest -> Point
-size f = (UV.length $ f V.! 0, V.length f)
+size (x, uv) = (x, UV.length uv `div` x)
 
 parseForest :: Text -> Forest
-parseForest = V.fromList . fmap buildRow . T.splitOn "\n" . T.strip where
+parseForest t = (T.length $ head ts, UV.fromList $ buildRow =<< ts) where
+  ts = T.splitOn "\n" $ T.strip t
   f c = fromEnum c - fromEnum '0'
-  buildRow = UV.fromList . fmap f . T.unpack
+  buildRow = fmap f . T.unpack
 
 indices :: Forest -> [Point]
 indices f = [0..x-1] >>= g where
