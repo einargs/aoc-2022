@@ -80,6 +80,7 @@ library
     , rosezipper >=0.2
     , text >=1.2
     , time >=1.11.1.1
+    , vector >=0.12
   default-language: Haskell2010
 
 executable aoc2022-exe
@@ -128,6 +129,7 @@ executable aoc2022-exe
     , rosezipper >=0.2
     , text >=1.2
     , time >=1.11.1.1
+    , vector >=0.12
   default-language: Haskell2010
 
 test-suite aoc2022-test
@@ -176,4 +178,5 @@ test-suite aoc2022-test
     , rosezipper >=0.2
     , text >=1.2
     , time >=1.11.1.1
+    , vector >=0.12
   default-language: Haskell2010
