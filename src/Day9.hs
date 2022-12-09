@@ -8,8 +8,9 @@ import Text.Megaparsec.Char qualified as C
 import Text.Megaparsec.Char.Lexer qualified as L
 import Data.Functor (($>))
 import Control.Arrow (first, second)
-import Data.List (nub, scanl', foldl')
-import Debug.Trace qualified as DT
+import Data.List (foldl')
+import Data.Set (Set)
+import Data.Set qualified as S
 
 import Day
 
@@ -49,28 +50,28 @@ updateTail (hx, hy) (tx, ty)
     ediag x1 x2 y1 y2 = abs (x1-x2) == 2 && abs (y1-y2) == 2
 
 part1 :: [Move] -> Int
-part1 ms = length (nub $ sim ((0,0),(0,0)) ms []) where
+part1 moves = S.size $ sim ((0,0),(0,0)) moves S.empty where
   advance :: Dir -> (Pos, Pos) -> (Pos, Pos)
   advance d (t, h) = (updateTail h' t, h') where
     h' = advanceHead d h
-  sim :: (Pos, Pos) -> [Move] -> [Pos] -> [Pos]
+  sim :: (Pos, Pos) -> [Move] -> Set Pos -> Set Pos
   sim _ [] ts = ts
   sim st ((_, 0):ms) ts = sim st ms ts
-  sim st ((d, i):ms) ts = sim st' ((d, i-1):ms) (t':ts)
+  sim st ((d, i):ms) ts = sim st' ((d, i-1):ms) (S.insert t' ts)
     where st'@(t', _) = advance d st
 
 part2 :: [Move] -> Int
-part2 ms = length (nub $ sim (replicate 9 (0,0), (0,0)) ms []) where
+part2 moves = S.size $ sim (replicate 9 (0,0), (0,0)) moves S.empty where
   -- The tail is stored so the end of the tail is the last
   advance :: Dir -> ([Pos], Pos) -> ([Pos], Pos)
   advance d (ts, h) = (ts', h') where
     h' = advanceHead d h
     f (lh, xs) lt = (lt', lt':xs) where lt' = updateTail lh lt
     ts' = reverse $ snd $ foldl' f (h',[]) ts 
-  sim :: ([Pos], Pos) -> [Move] -> [Pos] -> [Pos]
+  sim :: ([Pos], Pos) -> [Move] -> Set Pos -> Set Pos
   sim _ [] fs = fs
   sim st ((_, 0):ms) fs = sim st ms fs
-  sim st ((d, i):ms) fs = sim st' ((d, i-1):ms) ((ts' !! 8):fs)
+  sim st ((d, i):ms) fs = sim st' ((d, i-1):ms) (S.insert (ts' !! 8) fs)
     where st'@(ts', _) = advance d st
 
 wrap :: ([Move] -> Int) -> Text -> Text
