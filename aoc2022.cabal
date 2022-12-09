@@ -38,6 +38,7 @@ library
       Day7
       Day7Zipper
       Day8
+      Day9
   other-modules:
       Paths_aoc2022
   hs-source-dirs:
