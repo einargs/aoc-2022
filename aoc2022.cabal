@@ -27,6 +27,7 @@ library
   exposed-modules:
       Day
       Day1
+      Day10
       Day2
       Day2Golf
       Day3

@@ -23,12 +23,13 @@ import Day7
 import Day7Zipper
 import Day8
 import Day9
+import Day10
 
 days :: Map Text Day
 days = M.fromList $ f <$> dayList where
   f day@Day{dayName} = (dayName, day)
   dayList = [day1, day2, day2Golf, day3, day4, day4Golf, day5, day6, day6Alt,
-    day7, day7Zipper, day8, day9]
+    day7, day7Zipper, day8, day9, day10]
 
 runPart :: Bool -> Text -> Maybe Text -> IO ()
 runPart measure ans mbAns = do
