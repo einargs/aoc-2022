@@ -10,7 +10,7 @@ import Data.Functor (($>))
 import Control.Monad (void)
 import Data.Sequence (Seq((:<|), (:|>)))
 import Data.Sequence qualified as S
-import Data.List (sortBy, )
+import Data.List (sortBy)
 import Data.Foldable (foldl', toList)
 
 import Day
@@ -100,4 +100,4 @@ wrap :: Show a => (Troop -> a) -> Text -> Text
 wrap f = T.pack . show . f . runParse parseTroop
 
 day11 :: Day
-day11 = mkDay "11" (wrap part1) (wrap part2)
+day11 = answeredDay "11" (wrap part1) (wrap part2) "54253" "13119526120"
