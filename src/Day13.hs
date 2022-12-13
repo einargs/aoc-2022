@@ -19,18 +19,11 @@ parsePacket = val <|> list where
   list = P.between (C.char '[') (C.char ']') $
     List <$> parsePacket `P.sepBy` C.char ','
 
-rightOrder :: Packet -> Packet -> Ordering
-rightOrder p1@(Val _) p2@(List _) = rightOrder (List [p1]) p2
-rightOrder p1@(List _) p2@(Val _) = rightOrder p1 (List [p2])
-rightOrder (Val a) (Val b) = compare a b
-rightOrder (List a) (List b) = cmpList a b where
-  cmpList [] [] = EQ
-  cmpList (_:_) [] = GT
-  cmpList [] (_:_) = LT
-  cmpList (l:ls) (r:rs) = rightOrder l r <> cmpList ls rs
-
 instance Ord Packet where
-  compare = rightOrder
+  compare p1@(Val _) p2@(List _) = compare (List [p1]) p2
+  compare p1@(List _) p2@(Val _) = compare p1 (List [p2])
+  compare (Val a) (Val b) = compare a b
+  compare (List a) (List b) = compare a b
 
 part1 :: Parser Int
 part1 = solve <$> parseInput where
