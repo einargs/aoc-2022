@@ -38,8 +38,7 @@ part1 = solve <$> parseInput where
   parseInput = pair `P.sepBy` P.try (C.newline *> C.newline) where
     pair = (,) <$> (parsePacket <* C.newline) <*> parsePacket
   solve :: [(Packet, Packet)] -> Int
-  solve = sum . fmap fst . filter (f . snd) . zip [1..]
-    where f = uncurry (<)
+  solve = sum . fmap fst . filter (uncurry (<) . snd) . zip [1..]
 
 part2 :: Parser Int
 part2 = fmap solve $ P.some $ parsePacket <* P.some C.newline where
