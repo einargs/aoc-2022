@@ -3,22 +3,14 @@ module Day12 (day12) where
 import Data.Text (Text)
 import Data.Text qualified as T
 import Data.Text.Encoding (encodeUtf8)
-import Data.Functor (($>))
-import Control.Monad (void)
 import Data.ByteString qualified as BS
 import Data.Foldable (foldl', toList)
 import Algorithm.Search qualified as Alg
-import Data.Maybe (fromJust, mapMaybe, listToMaybe)
-import Data.Set (Set)
-import Data.Set qualified as S
-import Debug.Trace qualified as DT
+import Data.Maybe (fromJust, mapMaybe)
 
 import Day
 
 type Pos = (Int, Int)
-
-label :: Show a => String -> a -> a
-label l v = DT.trace (l <> " " <> show v) v
 
 -- length data start end
 data Region = Region Int BS.ByteString Pos Pos
@@ -73,4 +65,4 @@ wrap :: (Region -> Int) -> Text -> Text
 wrap f = T.pack . show . f . toRegion
 
 day12 :: Day
-day12 = mkDay "12" (wrap part1) (wrap part2)
+day12 = answeredDay "12" (wrap part1) (wrap part2) "456" "454"
